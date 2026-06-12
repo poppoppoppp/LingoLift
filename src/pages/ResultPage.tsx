@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { abilityTagLabels } from "../labels";
+import { abilityTagLabels, difficultyLabels, trainingCategoryLabels } from "../labels";
 import { buildTrainingResult } from "../services/resultData";
 import type { DailyTraining, TrainingSession } from "../types";
 
@@ -53,6 +53,18 @@ export function ResultPage({ training, session, onViewRecords }: ResultPageProps
             <dd>{result.scenarioTitle}</dd>
           </div>
           <div>
+            <dt>分类</dt>
+            <dd>{trainingCategoryLabels[training.category]}</dd>
+          </div>
+          <div>
+            <dt>难度</dt>
+            <dd>{difficultyLabels[training.difficulty]}</dd>
+          </div>
+          <div>
+            <dt>核心技巧</dt>
+            <dd>{training.quality.coreSkill}</dd>
+          </div>
+          <div>
             <dt>保存来源</dt>
             <dd>{result.bestExpressionSource ? sourceLabels[result.bestExpressionSource] : "尚未保存"}</dd>
           </div>
@@ -94,8 +106,13 @@ export function ResultPage({ training, session, onViewRecords }: ResultPageProps
       </section>
 
       <section className="plain-section">
-        <h2>能力标签</h2>
+        <h2>训练标签</h2>
         <div className="tag-row">
+          {training.tags.map((tag) => (
+            <span className="tag" key={tag}>
+              {tag}
+            </span>
+          ))}
           {result.abilityTags.map((tag) => (
             <span className="tag" key={tag}>
               {abilityTagLabels[tag]}

@@ -5,12 +5,28 @@ export type AbilityTag =
   | "say_precisely"
   | "easy_to_respond";
 
+export type TrainingCategory =
+  | "daily_chat"
+  | "academic"
+  | "relationship"
+  | "self_expression"
+  | "conflict"
+  | "work_report"
+  | "request"
+  | "explanation";
+
+export type TrainingDifficulty = "easy" | "medium" | "hard";
+
 export interface DailyTraining {
   id: string;
   date: string;
   title: string;
   theme: string;
   target: string;
+  category: TrainingCategory;
+  difficulty: TrainingDifficulty;
+  estimatedMinutes: number;
+  tags: string[];
   fragment: {
     title?: string;
     author?: string;
@@ -44,6 +60,11 @@ export interface DailyTraining {
     reusableSentences: string[];
   };
   abilityTags: AbilityTag[];
+  quality: {
+    coreSkill: string;
+    applicableScenes: string[];
+    antiPatterns: string[];
+  };
 }
 
 export interface AiDiagnosis {

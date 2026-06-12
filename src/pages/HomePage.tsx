@@ -1,4 +1,4 @@
-import { abilityTagLabels, statusLabels } from "../labels";
+import { abilityTagLabels, difficultyLabels, statusLabels, trainingCategoryLabels } from "../labels";
 import type { DailyTraining, TrainingSession } from "../types";
 
 interface HomePageProps {
@@ -27,6 +27,12 @@ export function HomePage({ training, session, onStart, onViewResult, onRestart, 
         <div className="card-topline">
           <span>今日训练</span>
           <span className={`status status-${session.status}`}>{statusLabels[session.status]}</span>
+        </div>
+        <div className="training-meta-row">
+          <span className="meta-pill is-today">今日训练</span>
+          <span className="meta-pill">{trainingCategoryLabels[training.category]}</span>
+          <span className="meta-pill">{difficultyLabels[training.difficulty]}</span>
+          <span className="meta-pill">{training.estimatedMinutes} 分钟</span>
         </div>
         <h2>{training.title}</h2>
         <dl className="meta-list">

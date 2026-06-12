@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { abilityTagLabels } from "../labels";
+import { trainings } from "../data/demoTraining";
+import { abilityTagLabels, difficultyLabels, trainingCategoryLabels } from "../labels";
 import type { SavedExpression } from "../types";
 
 interface RecordsPageProps {
@@ -21,41 +22,12 @@ export function RecordsPage({ records }: RecordsPageProps) {
       ) : (
         <div className="record-list">
           {records.map((record) => (
-            <article className="record-card" key={record.id}>
-              <div className="card-topline">
-                <span>{record.date}</span>
-                <span>{record.theme}</span>
-              </div>
-              <dl className="record-detail-list">
-                <div>
-                  <dt>场景</dt>
-                  <dd>{record.scenarioTitle}</dd>
-                </div>
-                <div>
-                  <dt>表达公式</dt>
-                  <dd>{record.formula}</dd>
-                </div>
-              </dl>
-              <div className="answer-box">
-                <strong>最佳表达</strong>
-                <span>{record.content}</span>
-              </div>
-              <div className="tag-row">
-                {record.abilityTags.map((tag) => (
-                  <span className="tag" key={tag}>
-                    {abilityTagLabels[tag]}
-                  </span>
-                ))}
-              </div>
-              <button
-                className="secondary-button full-width-button"
-                type="button"
-                onClick={() => setSelectedId(selectedId === record.id ? null : record.id)}
-              >
-                {selectedId === record.id ? "收起详情" : "查看详情"}
-              </button>
-              {selectedId === record.id ? <RecordDetail record={record} /> : null}
-            </article>
+            <RecordCard
+              key={record.id}
+              record={record}
+              expanded={selectedId === record.id}
+              onToggle={() => setSelectedId(selectedId === record.id ? null : record.id)}
+            />
           ))}
         </div>
       )}
@@ -63,7 +35,59 @@ export function RecordsPage({ records }: RecordsPageProps) {
   );
 }
 
+function RecordCard({ record, expanded, onToggle }: { record: SavedExpression; expanded: boolean; onToggle: () => void }) {
+  const training = trainings.find((item) => item.id === record.trainingId);
+
+  return (
+    <article className="record-card">
+      <div className="card-topline">
+        <span>{record.date}</span>
+        <span>{record.theme}</span>
+      </div>
+      {training ? (
+        <div className="training-meta-row">
+          <span className="meta-pill">{trainingCategoryLabels[training.category]}</span>
+          <span className="meta-pill">{difficultyLabels[training.difficulty]}</span>
+          <span className="meta-pill">{training.estimatedMinutes} 分钟</span>
+        </div>
+      ) : null}
+      <dl className="record-detail-list">
+        <div>
+          <dt>场景</dt>
+          <dd>{record.scenarioTitle}</dd>
+        </div>
+        <div>
+          <dt>表达公式</dt>
+          <dd>{record.formula}</dd>
+        </div>
+      </dl>
+      <div className="answer-box">
+        <strong>最佳表达</strong>
+        <span>{record.content}</span>
+      </div>
+      <div className="tag-row">
+        {training?.tags.map((tag) => (
+          <span className="tag" key={tag}>
+            {tag}
+          </span>
+        ))}
+        {record.abilityTags.map((tag) => (
+          <span className="tag" key={tag}>
+            {abilityTagLabels[tag]}
+          </span>
+        ))}
+      </div>
+      <button className="secondary-button full-width-button" type="button" onClick={onToggle}>
+        {expanded ? "收起详情" : "查看详情"}
+      </button>
+      {expanded ? <RecordDetail record={record} /> : null}
+    </article>
+  );
+}
+
 function RecordDetail({ record }: { record: SavedExpression }) {
+  const training = trainings.find((item) => item.id === record.trainingId);
+
   return (
     <section className="record-expanded">
       <h3>记录详情</h3>
@@ -80,6 +104,22 @@ function RecordDetail({ record }: { record: SavedExpression }) {
           <dt>表达公式</dt>
           <dd>{record.formula || "暂无公式"}</dd>
         </div>
+        {training ? (
+          <>
+            <div>
+              <dt>分类</dt>
+              <dd>{trainingCategoryLabels[training.category]}</dd>
+            </div>
+            <div>
+              <dt>难度</dt>
+              <dd>{difficultyLabels[training.difficulty]}</dd>
+            </div>
+            <div>
+              <dt>核心技巧</dt>
+              <dd>{training.quality.coreSkill}</dd>
+            </div>
+          </>
+        ) : null}
         <div>
           <dt>最佳表达</dt>
           <dd className="preserve-lines">{record.content || "暂无内容"}</dd>

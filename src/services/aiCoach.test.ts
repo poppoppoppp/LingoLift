@@ -53,7 +53,8 @@ describe("AI coach fallback", () => {
       secondAnswer: "second answer"
     });
 
-    expect(result.optimizedAnswer).toContain("我先直接说核心");
+    expect(result.optimizedAnswer).toContain(demoTraining.rewriteFramework.template);
+    expect(result.dailyFormula).toBe(demoTraining.dailyTakeaway.formula);
   });
 
   it("falls back to mock AI when real AI returns invalid JSON", async () => {
