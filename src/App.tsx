@@ -20,9 +20,8 @@ import type { DailyTraining, TrainingSession } from "./types";
 
 type Page = "home" | "training" | "result" | "library" | "records" | "growth" | "settings";
 
-const navItems: { page: Page; label: string }[] = [
+export const navItems: { page: Exclude<Page, "training" | "result">; label: string }[] = [
   { page: "home", label: "今日" },
-  { page: "training", label: "训练" },
   { page: "library", label: "训练库" },
   { page: "records", label: "记录" },
   { page: "growth", label: "成长" },
@@ -88,8 +87,10 @@ export default function App() {
     setPage("training");
   }
 
+  const showBottomNav = page !== "training";
+
   return (
-    <div className="app-shell">
+    <div className={showBottomNav ? "app-shell" : "app-shell app-shell-training"}>
       <main className="app-main">
         {page === "home" ? (
           <HomePage
@@ -104,25 +105,35 @@ export default function App() {
         {page === "training" ? (
           <TrainingPage training={currentTraining} session={session} onSessionChange={refresh} onViewResult={() => setPage("result")} />
         ) : null}
-        {page === "result" ? <ResultPage training={currentTraining} session={session} onViewRecords={() => setPage("records")} /> : null}
+        {page === "result" ? (
+          <ResultPage
+            training={currentTraining}
+            session={session}
+            onBackHome={() => setPage("home")}
+            onViewRecords={() => setPage("records")}
+            onOpenLibrary={() => setPage("library")}
+          />
+        ) : null}
         {page === "library" ? <LibraryPage trainings={trainings} sessions={sessions} onSelectTraining={startTraining} /> : null}
         {page === "records" ? <RecordsPage records={records} /> : null}
         {page === "growth" ? <GrowthPage stats={growthStats} onStartTraining={startTodayTraining} /> : null}
         {page === "settings" ? <SettingsPage onClearData={resetData} /> : null}
       </main>
 
-      <nav className="bottom-nav" aria-label="主导航">
-        {navItems.map((item) => (
-          <button
-            className={item.page === page ? "nav-button is-active" : "nav-button"}
-            key={item.page}
-            onClick={() => setPage(item.page)}
-            type="button"
-          >
-            {item.label}
-          </button>
-        ))}
-      </nav>
+      {showBottomNav ? (
+        <nav className="bottom-nav" aria-label="主导航">
+          {navItems.map((item) => (
+            <button
+              className={item.page === page ? "nav-button is-active" : "nav-button"}
+              key={item.page}
+              onClick={() => setPage(item.page)}
+              type="button"
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      ) : null}
     </div>
   );
 }

@@ -44,7 +44,15 @@ export function SettingsPage({ onClearData }: SettingsPageProps) {
 
       <section className="plain-section">
         <h2>版本</h2>
-        <p>V0.2</p>
+        <p>V0.7</p>
+      </section>
+
+      <section className="plain-section">
+        <h2>添加到主屏幕</h2>
+        <ul className="compact-list install-list">
+          <li>iPhone Safari：分享按钮 → 添加到主屏幕。</li>
+          <li>Android Chrome / Edge：菜单 → 添加到主屏幕 / 安装应用。</li>
+        </ul>
       </section>
 
       <section className="plain-section">

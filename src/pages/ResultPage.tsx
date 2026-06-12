@@ -6,7 +6,9 @@ import type { DailyTraining, TrainingSession } from "../types";
 interface ResultPageProps {
   training: DailyTraining;
   session: TrainingSession;
+  onBackHome: () => void;
   onViewRecords: () => void;
+  onOpenLibrary: () => void;
 }
 
 const sourceLabels: Record<NonNullable<TrainingSession["savedBestExpression"]>["source"], string> = {
@@ -15,7 +17,7 @@ const sourceLabels: Record<NonNullable<TrainingSession["savedBestExpression"]>["
   manual: "手动编辑版"
 };
 
-export function ResultPage({ training, session, onViewRecords }: ResultPageProps) {
+export function ResultPage({ training, session, onBackHome, onViewRecords, onOpenLibrary }: ResultPageProps) {
   const result = buildTrainingResult(training, session);
   const [copyMessage, setCopyMessage] = useState("");
 
@@ -71,6 +73,19 @@ export function ResultPage({ training, session, onViewRecords }: ResultPageProps
         </dl>
       </section>
 
+      <section className="best-expression-panel">
+        <div className="copy-block-header">
+          <div>
+            <p className="eyebrow">最终最佳表达</p>
+            <h2>今天可以直接复用这一版</h2>
+          </div>
+          <button className="copy-button copy-button-large" type="button" onClick={() => copyText(result.bestExpression)} disabled={!result.bestExpression.trim()}>
+            复制
+          </button>
+        </div>
+        <p>{result.bestExpression || "暂无内容"}</p>
+      </section>
+
       <section className="plain-section">
         <h2>表达前后对比</h2>
         <div className="comparison-grid">
@@ -98,9 +113,10 @@ export function ResultPage({ training, session, onViewRecords }: ResultPageProps
           <ResultText title="AI 诊断摘要" text={result.diagnosisSummary} />
           <ResultText title="用户第二次重写" text={result.secondAnswer} />
           <CopyBlock title="AI 优化版" text={result.aiOptimizedAnswer} onCopy={copyText} />
-          <CopyBlock title="最终保存的最佳表达" text={result.bestExpression} onCopy={copyText} />
           <CopyBlock title="今日表达公式" text={result.formula} onCopy={copyText} />
-          <CopyBlock title="可复用句式" text={result.reusableSentences.join("\n")} onCopy={copyText} />
+          {result.reusableSentences.map((sentence, index) => (
+            <CopyBlock title={`可复用句式 ${index + 1}`} text={sentence} onCopy={copyText} key={sentence} />
+          ))}
         </div>
         {copyMessage ? <p className={copyMessage === "已复制" ? "success-state" : "notice-state"}>{copyMessage}</p> : null}
       </section>
@@ -121,9 +137,17 @@ export function ResultPage({ training, session, onViewRecords }: ResultPageProps
         </div>
       </section>
 
-      <button className="secondary-button full-width-button" type="button" onClick={onViewRecords}>
-        查看全部记录
-      </button>
+      <div className="result-actions">
+        <button className="secondary-button" type="button" onClick={onBackHome}>
+          返回首页
+        </button>
+        <button className="secondary-button" type="button" onClick={onViewRecords}>
+          查看记录
+        </button>
+        <button className="secondary-button" type="button" onClick={onOpenLibrary}>
+          继续训练库
+        </button>
+      </div>
     </section>
   );
 }

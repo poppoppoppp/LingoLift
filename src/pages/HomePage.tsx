@@ -12,20 +12,28 @@ interface HomePageProps {
 
 export function HomePage({ training, session, onStart, onViewResult, onRestart, onOpenLibrary }: HomePageProps) {
   const actionLabel =
-    session.status === "not_started" ? "开始训练" : session.status === "in_progress" ? "继续训练" : "查看今日结果";
+    session.status === "not_started" ? "开始今日训练" : session.status === "in_progress" ? "继续今日训练" : "查看今日结果";
   const progress =
     session.status === "not_started" ? 0 : session.status === "completed" ? 100 : Math.round((((session.currentStep ?? 0) + 1) / 12) * 100);
+  const todayLabel = new Date(`${training.date}T00:00:00`).toLocaleDateString("zh-CN", {
+    month: "long",
+    day: "numeric",
+    weekday: "long"
+  });
 
   return (
     <section className="page">
-      <header className="page-header">
-        <h1>表达训练</h1>
-        <p>每日一次，把模糊表达练成可复用的结构。</p>
+      <header className="home-header">
+        <div>
+          <p className="app-name">LingoLift</p>
+          <h1>今日训练</h1>
+        </div>
+        <time dateTime={training.date}>{todayLabel}</time>
       </header>
 
       <article className="task-card">
         <div className="card-topline">
-          <span>今日训练</span>
+          <span>{training.theme}</span>
           <span className={`status status-${session.status}`}>{statusLabels[session.status]}</span>
         </div>
         <div className="training-meta-row">
@@ -37,22 +45,29 @@ export function HomePage({ training, session, onStart, onViewResult, onRestart, 
         <h2>{training.title}</h2>
         <dl className="meta-list">
           <div>
-            <dt>当前状态</dt>
-            <dd>{statusLabels[session.status]}</dd>
-          </div>
-          <div>
-            <dt>当前进度</dt>
-            <dd>{progress}%</dd>
-          </div>
-          <div>
-            <dt>主题</dt>
-            <dd>{training.theme}</dd>
-          </div>
-          <div>
             <dt>目标</dt>
             <dd>{training.target}</dd>
           </div>
+          <div>
+            <dt>分类</dt>
+            <dd>{trainingCategoryLabels[training.category]}</dd>
+          </div>
+          <div>
+            <dt>难度</dt>
+            <dd>{difficultyLabels[training.difficulty]}</dd>
+          </div>
+          <div>
+            <dt>预计时长</dt>
+            <dd>{training.estimatedMinutes} 分钟</dd>
+          </div>
         </dl>
+        <div className="progress-summary">
+          <span>当前进度</span>
+          <strong>{progress}%</strong>
+          <div className="progress-track" aria-label="今日训练进度">
+            <span style={{ width: `${progress}%` }} />
+          </div>
+        </div>
         <div className="tag-row">
           {training.abilityTags.map((tag) => (
             <span className="tag" key={tag}>
@@ -72,7 +87,7 @@ export function HomePage({ training, session, onStart, onViewResult, onRestart, 
               查看今日结果
             </button>
             <button className="secondary-button" type="button" onClick={onRestart}>
-              再练一次
+              重新开始
             </button>
           </div>
         ) : (
@@ -84,16 +99,6 @@ export function HomePage({ training, session, onStart, onViewResult, onRestart, 
           查看训练库
         </button>
       </article>
-
-      <section className="plain-section">
-        <h2>今日闭环</h2>
-        <ol className="compact-list">
-          <li>读片段，抓技巧。</li>
-          <li>进入真实场景，先表达一次。</li>
-          <li>看诊断，按框架重写。</li>
-          <li>保存今日最佳表达。</li>
-        </ol>
-      </section>
     </section>
   );
 }

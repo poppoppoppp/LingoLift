@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="LingoLift maskable icon">
+  <rect width="512" height="512" fill="#111827"/>
+  <circle cx="256" cy="256" r="190" fill="#1f2937"/>
+  <path d="M148 330V156h48v133h88v41H148Z" fill="#f8fafc"/>
+  <path d="M296 356c-44 0-78-31-78-75s34-75 78-75c34 0 62 18 73 47h-49c-5-8-13-12-24-12-18 0-31 15-31 40s13 40 31 40c14 0 24-7 28-19h-35v-33h82v22c-7 38-37 65-75 65Z" fill="#60a5fa"/>
+  <path d="M128 384h256" stroke="#93c5fd" stroke-width="20" stroke-linecap="round"/>
+</svg>

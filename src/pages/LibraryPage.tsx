@@ -41,7 +41,7 @@ export function LibraryPage({ trainings, sessions, onSelectTraining }: LibraryPa
       </header>
 
       <section className="filter-panel" aria-label="训练库筛选">
-        <FilterSelect
+        <FilterChipGroup
           label="分类"
           value={categoryFilter}
           onChange={(value) => setCategoryFilter(value as CategoryFilter)}
@@ -50,7 +50,7 @@ export function LibraryPage({ trainings, sessions, onSelectTraining }: LibraryPa
             ...categories.map((category) => ({ value: category, label: trainingCategoryLabels[category] })),
           ]}
         />
-        <FilterSelect
+        <FilterChipGroup
           label="难度"
           value={difficultyFilter}
           onChange={(value) => setDifficultyFilter(value as DifficultyFilter)}
@@ -59,7 +59,7 @@ export function LibraryPage({ trainings, sessions, onSelectTraining }: LibraryPa
             ...difficulties.map((difficulty) => ({ value: difficulty, label: difficultyLabels[difficulty] })),
           ]}
         />
-        <FilterSelect
+        <FilterChipGroup
           label="能力"
           value={abilityFilter}
           onChange={(value) => setAbilityFilter(value as AbilityFilter)}
@@ -68,6 +68,7 @@ export function LibraryPage({ trainings, sessions, onSelectTraining }: LibraryPa
             ...abilityTags.map((tag) => ({ value: tag, label: abilityTagLabels[tag] })),
           ]}
         />
+        <p className="filter-summary">已筛选 {filteredTrainings.length} 个训练</p>
       </section>
 
       <div className="library-list">
@@ -106,7 +107,7 @@ export function LibraryPage({ trainings, sessions, onSelectTraining }: LibraryPa
   );
 }
 
-function FilterSelect({
+function FilterChipGroup({
   label,
   value,
   options,
@@ -118,15 +119,22 @@ function FilterSelect({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="filter-field">
+    <div className="filter-field">
       <span>{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
+      <div className="filter-chip-row" role="listbox" aria-label={label}>
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
+          <button
+            className={option.value === value ? "filter-chip is-active" : "filter-chip"}
+            key={option.value}
+            type="button"
+            role="option"
+            aria-selected={option.value === value}
+            onClick={() => onChange(option.value)}
+          >
             {option.label}
-          </option>
+          </button>
         ))}
-      </select>
-    </label>
+      </div>
+    </div>
   );
 }
